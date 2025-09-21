@@ -1,0 +1,42 @@
+{
+  "mcpServers": {
+    "tavily": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "tavily-mcp@0.2.3"
+      ],
+      "env": {
+        "TAVILY_API_KEY": "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"
+      }
+    },
+    "codegen": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/codegen-sh/codegen-sdk.git#egg=codegen-mcp-server&subdirectory=codegen-examples/examples/codegen-mcp-server",
+        "codegen-mcp-server"
+      ]
+    },
+    "e2b": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@e2b/mcp-server"
+      ],
+      "env": {
+        "E2B_API_KEY": "e2b_da921ba2075484f9062a6c7cf3c58c6ed040cfbc"
+      }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest",
+        "--browser=",
+        "--headless=",
+        "--viewport-size="
+      ]
+    }
+  }
+}
