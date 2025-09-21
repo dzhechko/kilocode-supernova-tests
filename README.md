@@ -17,63 +17,6 @@ A beautiful movie tracking application built with Expo React Native, featuring a
 - 📊 **Statistics**: View your movie watching statistics
 - 🎨 **Beautiful UI**: Red, blue, and yellow color scheme with transparency effects
 
-#### Setup
-
-##### Option 1: Local Development
-
-1. **Install Dependencies**
-   ```bash
-   npm install
-   ```
-
-2. **Get TMDB API Key**
-   - Visit [The Movie Database (TMDB)](https://www.themoviedb.org/settings/api)
-   - Create an account and request an API key
-
-3. **Configure Environment Variables**
-   - Copy the `.env` file and update it with your API key:
-   ```bash
-   TMDB_API_KEY=your_actual_api_key_here
-   ```
-   - Replace `your_actual_api_key_here` with your real TMDB API key
-
-4. **Run the App**
-   ```bash
-   npm start
-   ```
-
-##### Option 2: Docker Development
-
-1. **Build and run with Docker Compose:**
-   ```bash
-   docker-compose up --build
-   ```
-
-2. **Or build and run manually:**
-   ```bash
-   docker build -t movie-tracker .
-   docker run -p 19006:19006 -p 19000:19000 -p 19001:19001 movie-tracker
-   ```
-
-3. **Access the app:**
-   - Expo DevTools: http://localhost:19006
-   - Metro Bundler: http://localhost:19000
-   - Web Interface: http://localhost:19001
-
-**See [Docker-Setup.md](Docker-Setup.md) for detailed Docker instructions.**
-
-#### Environment Variables
-
-The app uses the following environment variables (configured in `.env`):
-
-- `TMDB_API_KEY` - Your TMDB API key (required)
-- `TMDB_BASE_URL` - TMDB API base URL (default: https://api.themoviedb.org/3)
-- `TMDB_IMAGE_BASE_URL` - TMDB images base URL (default: https://image.tmdb.org/t/p)
-- `APP_NAME` - App name (default: Movie Tracker)
-- `APP_VERSION` - App version (default: 1.0.0)
-
-**⚠️ Important**: Never commit your `.env` file to version control. It's already included in `.gitignore`.
-
 #### Technologies Used
 
 - **React Native** with Expo
@@ -81,3 +24,52 @@ The app uses the following environment variables (configured in `.env`):
 - **AsyncStorage** for local data persistence
 - **Axios** for API requests
 - **TMDB API** for movie data
+
+### 2. Terminal Calculator (test-02)
+
+A beautiful terminal-based calculator built with Go and Bubble Tea framework.
+
+#### Features
+
+- **Classic Calculator Layout**: Clean, intuitive interface with a familiar button grid
+- **Keyboard Navigation**: Use arrow keys to navigate between buttons
+- **Hotkeys**: Direct keyboard input for numbers and operations
+- **Visual Feedback**: Selected buttons are highlighted
+- **Formatted Display**: Numbers are displayed with thousand separators
+- **Full Functionality**: Addition, subtraction, multiplication, division, and decimal support
+
+#### Controls
+
+##### Navigation
+- **Arrow Keys** (↑↓←→): Move between calculator buttons
+- **Enter**: Press the selected button
+- **ESC** or **q**: Exit the application
+
+##### Direct Input
+- **Numbers** (0-9): Input digits directly
+- **Operators** (+, -, *, /): Perform operations
+- **Enter**: Calculate result (equals)
+- **Backspace**: Delete last digit
+- **C**: Clear all
+- **CE**: Clear current entry
+- **.**: Add decimal point
+
+#### Installation
+
+1. Make sure you have Go installed (version 1.21 or higher)
+2. Navigate to the calculator directory
+3. Install dependencies:
+   ```bash
+   go mod tidy
+   ```
+4. Run the calculator:
+   ```bash
+   go run .
+   ```
+
+#### Technologies Used
+
+- Built with [Bubble Tea](https://github.com/charmbracelet/bubbletea) for terminal UI
+- Styled with [Lip Gloss](https://github.com/charmbracelet/lipgloss) for beautiful terminal output
+- Full keyboard support with both navigation and direct input modes
+- Proper error handling for division by zero and invalid operations
