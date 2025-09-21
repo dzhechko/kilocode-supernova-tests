@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  movie-tracker:
+    build: .
+    ports:
+      - "19006:19006"  # Expo DevTools
+      - "19000:19000"  # Metro bundler
+      - "19001:19001"  # Web interface
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+      - REACT_NATIVE_PACKAGER_HOSTNAME=0.0.0.0
+      - EXPO_PACKAGER_HOSTNAME=0.0.0.0
+      - EXPO_WEB_HOST=0.0.0.0
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+      - EXPO_METRO_PORT=8081
+      - CI=true
+      - EXPO_USE_METRO_WORKSPACE_ROOT=true
+      - EXPO_NO_DEV_CLIENT=true
+      - EXPO_SKIP_ONLINE_CHECK=true
+    command: ["npx", "expo", "start", "--host", "lan", "--clear", "--no-dev", "--minify"]
+    networks:
+      - movie-tracker-network
+
+networks:
+  movie-tracker-network:
+    driver: bridge
