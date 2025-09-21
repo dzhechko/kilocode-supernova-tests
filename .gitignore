@@ -51,3 +51,6 @@ temp/
 
 # TypeScript
 *.tsbuildinfo
+
+# Kilocode configuration
+.kilocode/
