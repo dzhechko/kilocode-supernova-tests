@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sales Training Platform v2.0</title>
+    <meta name="description" content="Инновационная платформа для тренировки навыков продаж с помощью голосовых AI-помощников">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="AI Sales Training">
+
+    <!-- Icons -->
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;,">
+    <link rel="apple-touch-icon" href="data:image/x-icon;,">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(error => console.log('SW registration failed'));
+            });
+        }
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-microphone"></i>
+                    <span>AI Sales Training</span>
+                </div>
+                <div class="header-actions">
+                    <button id="api-keys-btn" class="btn btn-secondary">
+                        <i class="fas fa-key"></i>
+                        API Keys
+                    </button>
+                    <button id="help-btn" class="btn btn-outline">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Status Indicator -->
+            <div id="status-indicator" class="status-indicator">
+                <div class="status-content">
+                    <i class="fas fa-key"></i>
+                    <span id="status-text">Настройте API ключи для начала работы</span>
+                    <div id="status-badge" class="status-badge">🔑 No Keys</div>
+                </div>
+            </div>
+
+            <!-- Mode Selection -->
+            <div class="mode-selection">
+                <h2>Выберите режим тренировки</h2>
+                <div class="mode-cards">
+                    <div id="agent-mode-card" class="mode-card">
+                        <div class="mode-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>🤖 Режим Агента</h3>
+                        <p>Живое общение с AI агентом ElevenLabs</p>
+                        <div class="mode-features">
+                            <span class="feature">Real-time диалог</span>
+                            <span class="feature">WebSocket связь</span>
+                            <span class="feature">Автоматический transcript</span>
+                        </div>
+                        <button id="agent-mode-btn" class="btn btn-primary" disabled>
+                            <i class="fas fa-play"></i>
+                            Начать Агент
+                        </button>
+                    </div>
+
+                    <div id="traditional-mode-card" class="mode-card">
+                        <div class="mode-icon">
+                            <i class="fas fa-list-ol"></i>
+                        </div>
+                        <h3>✅ Традиционный Режим</h3>
+                        <p>Структурированные сценарии продаж</p>
+                        <div class="mode-features">
+                            <span class="feature">5-этапные сценарии</span>
+                            <span class="feature">TTS генерация</span>
+                            <span class="feature">Пошаговая оценка</span>
+                        </div>
+                        <button id="traditional-mode-btn" class="btn btn-success" disabled>
+                            <i class="fas fa-play"></i>
+                            Начать Тренировку
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conversation Area -->
+            <div id="conversation-area" class="conversation-area" style="display: none;">
+                <div class="conversation-header">
+                    <h3 id="conversation-title">Тренировка продаж</h3>
+                    <div class="conversation-controls">
+                        <button id="end-conversation-btn" class="btn btn-danger">
+                            <i class="fas fa-stop"></i>
+                            Завершить
+                        </button>
+                    </div>
+                </div>
+
+                <div class="conversation-content">
+                    <!-- Messages will be inserted here -->
+                    <div id="messages-container" class="messages-container">
+                        <!-- Welcome message -->
+                        <div class="message ai-message">
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-text">Добро пожаловать в AI Sales Training! Я готов помочь вам улучшить навыки продаж. Выберите режим и начнем тренировку.</div>
+                                <div class="message-time">Сейчас</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="conversation-input">
+                    <div class="input-controls">
+                        <button id="voice-btn" class="btn btn-outline">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <div class="input-container">
+                            <input type="text" id="text-input" placeholder="Введите ваш ответ..." disabled>
+                            <button id="send-btn" class="btn btn-primary" disabled>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Area -->
+            <div id="results-area" class="results-area" style="display: none;">
+                <div class="results-header">
+                    <h3>Результаты анализа</h3>
+                    <button id="new-training-btn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Новая тренировка
+                    </button>
+                </div>
+
+                <div class="results-content">
+                    <div class="score-overview">
+                        <div class="overall-score">
+                            <div class="score-circle">
+                                <span id="overall-score">0</span>
+                                <span class="score-label">%</span>
+                            </div>
+                            <div class="score-text">
+                                <h4>Общий результат</h4>
+                                <p id="score-description">Анализ завершен</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detailed-scores">
+                        <h4>Детальный разбор</h4>
+                        <div id="criteria-scores" class="criteria-scores">
+                            <!-- Criteria scores will be inserted here -->
+                        </div>
+                    </div>
+
+                    <div class="recommendations">
+                        <h4>Персональные рекомендации</h4>
+                        <div id="recommendations-content" class="recommendations-content">
+                            <!-- Recommendations will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- API Keys Modal -->
+    <div id="api-keys-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Настройка API ключей</h3>
+                <button id="close-modal-btn" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="api-keys-form">
+                    <!-- ElevenLabs API Key -->
+                    <div class="form-group">
+                        <label for="elevenlabs-api-key">
+                            <i class="fas fa-key"></i>
+                            ElevenLabs API Key
+                            <span class="optional">(опционально)</span>
+                        </label>
+                        <div class="input-with-test">
+                            <input type="password" id="elevenlabs-api-key" placeholder="sk_... или sk-...">
+                            <button id="test-elevenlabs-btn" class="test-btn" title="Проверить ключ">
+                                <i class="fas fa-vial"></i>
+                            </button>
+                        </div>
+                        <div id="elevenlabs-status" class="key-status"></div>
+                    </div>
+
+                    <!-- ElevenLabs Agent ID -->
+                    <div class="form-group">
+                        <label for="elevenlabs-agent-id">
+                            <i class="fas fa-robot"></i>
+                            ElevenLabs Agent ID
+                            <span class="new-badge">🆕 NEW</span>
+                            <span class="optional">(опционально)</span>
+                        </label>
+                        <div class="input-with-test">
+                            <input type="text" id="elevenlabs-agent-id" placeholder="agent_... или UUID">
+                            <button id="test-agent-btn" class="test-btn" title="Проверить Agent ID">
+                                <i class="fas fa-vial"></i>
+                            </button>
+                        </div>
+                        <div id="agent-status" class="key-status"></div>
+                    </div>
+
+                    <!-- OpenAI API Key -->
+                    <div class="form-group required">
+                        <label for="openai-api-key">
+                            <i class="fas fa-brain"></i>
+                            OpenAI API Key
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-with-test">
+                            <input type="password" id="openai-api-key" placeholder="sk-... (48+ символов)" required>
+                            <button id="test-openai-btn" class="test-btn" title="Проверить ключ">
+                                <i class="fas fa-vial"></i>
+                            </button>
+                        </div>
+                        <div id="openai-status" class="key-status"></div>
+                    </div>
+                </div>
+
+                <div class="modal-help">
+                    <p><strong>Необходимые ключи:</strong></p>
+                    <ul>
+                        <li><strong>OpenAI API Key</strong> - обязателен для анализа разговоров</li>
+                        <li><strong>ElevenLabs API Key</strong> - для традиционного режима (TTS)</li>
+                        <li><strong>ElevenLabs Agent ID</strong> - для режима агента (живое общение)</li>
+                    </ul>
+                    <p><a href="#" target="_blank">Как получить API ключи?</a></p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="skip-demo-btn" class="btn btn-outline">Пропустить (демо)</button>
+                <button id="save-keys-btn" class="btn btn-primary">Сохранить ключи</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p id="loading-text">Загрузка...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="secure-key-manager.js"></script>
+    <script src="elevenlabs-agent.js"></script>
+    <script src="conversation-analyzer.js"></script>
+    <script src="api-keys-setup.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
